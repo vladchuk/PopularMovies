@@ -1,4 +1,6 @@
-package net.javango.popularmovies;
+package net.javango.popularmovies.util;
+
+import net.javango.popularmovies.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +53,7 @@ public class JsonUtil {
      * Parses JSON object into a list of movie poster paths
      * @param json contains a page of movies
      */
-    public static List<Movie> arrayToList(String json) throws JSONException {
+    public static List<Movie> parseMovies(String json) throws JSONException {
         JSONObject page = new JSONObject(json);
         JSONArray jsMovies = page.getJSONArray(RESULTS);
         List<Movie> list = new LinkedList<>();
