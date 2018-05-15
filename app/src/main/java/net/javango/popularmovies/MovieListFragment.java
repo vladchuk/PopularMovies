@@ -38,7 +38,7 @@ public class MovieListFragment extends Fragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
         mRecyclerView = view.findViewById(R.id.movie_recycler_view);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL,
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL,
                 false);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
