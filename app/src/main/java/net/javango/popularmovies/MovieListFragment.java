@@ -12,16 +12,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import net.javango.popularmovies.util.JsonUtil;
 import net.javango.popularmovies.util.NetUtil;
 
-import java.io.LineNumberInputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class MovieListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Movie>> {
@@ -31,6 +32,8 @@ public class MovieListFragment extends Fragment
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
+
+    private static int mSortState = R.id.sort_popularity;
 
     @Nullable
     @Override
@@ -47,6 +50,9 @@ public class MovieListFragment extends Fragment
         mRecyclerView.setAdapter(mMovieAdapter);
         getActivity().setTitle(R.string.app_name);
 
+        // enable menu
+        setHasOptionsMenu(true);
+
         // start
         getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
         return view;
@@ -56,12 +62,14 @@ public class MovieListFragment extends Fragment
         return null;
     }
 
-    private static class MovieLoader extends AsyncTaskLoader<List<Movie>> {
+    static class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
         private List<Movie> movies;
+        private MovieListFragment mFragment;
 
-        public MovieLoader(Context context) {
-            super(context);
+        public MovieLoader(MovieListFragment fragment) {
+            super(fragment.getContext());
+            mFragment = fragment;
         }
 
         @Override
@@ -76,7 +84,7 @@ public class MovieListFragment extends Fragment
         @Override
         public List<Movie> loadInBackground() {
             try {
-                URL url = NetUtil.getPopularUrl();
+                URL url = mSortState == R.id.sort_popularity ? NetUtil.getPopularUrl() : NetUtil.getTopRatedUrl();
                 String json = NetUtil.getContent(url);
                 List<Movie> movies = JsonUtil.parseMovies(json);
                 return movies;
@@ -96,7 +104,7 @@ public class MovieListFragment extends Fragment
     @NonNull
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
-        return new MovieLoader(getActivity());
+        return new MovieLoader(this);
     }
 
     @Override
@@ -107,5 +115,23 @@ public class MovieListFragment extends Fragment
     @Override
     public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
         // not implemented
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_movies, menu);
+        menu.findItem(mSortState).setChecked(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        mSortState = id;
+        item.setChecked(true);
+
+        mMovieAdapter.setData(null);
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+
+        return super.onOptionsItemSelected(item);
     }
 }
