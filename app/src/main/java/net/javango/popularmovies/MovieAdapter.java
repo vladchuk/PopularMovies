@@ -1,6 +1,7 @@
 package net.javango.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
     @Override
     public void onBindViewHolder(@NonNull MovieHolder holder, int position) {
         Movie movie = mMovies.get(position);
+        holder.mMovie = movie;
         String posterUri = NetUtil.getPosterUri(movie.getPosterPath());
         Picasso.with(mContext).
                 load(posterUri).
@@ -56,13 +58,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
         return mMovies != null ? mMovies.size() : 0;
     }
 
-    class MovieHolder extends RecyclerView.ViewHolder {
+    class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImageView;
         private Movie mMovie;
 
         public MovieHolder(View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.movie_poster);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = MovieFragment.newIntent(mContext, mMovie);
+            mContext.startActivity(intent);
         }
     }
 }

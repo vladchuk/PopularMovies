@@ -1,8 +1,9 @@
 package net.javango.popularmovies;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Movie {
+public class Movie implements Serializable {
 
     private String id;
     // original title
