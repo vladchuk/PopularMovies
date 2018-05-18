@@ -14,10 +14,12 @@ public class JsonUtil {
     public static final String ID = "id";
     public static final String TITLE = "title";
     public static final String POSTER_PATH = "poster_path";
+    public static final String BACKDROP_PATH = "backdrop_path";
     public static final String SYNOPSIS = "overview";
     public static final String RATING = "vote_average";
     public static final String RELEASE_DATE = "release_date";
     public static final String RESULTS = "results";
+    public static final String VOTE_COUNT = "vote_count";
 
     /**
      * Parses the full movie from JSON string
@@ -45,6 +47,8 @@ public class JsonUtil {
             movie.setSynopsis(jsMovie.getString(SYNOPSIS));
             movie.setRating(jsMovie.getString((RATING)));
             movie.setReleaseDate(jsMovie.getString(RELEASE_DATE));
+            movie.setBackdropPath(jsMovie.getString(BACKDROP_PATH));
+            movie.setVoteCount(jsMovie.getString(VOTE_COUNT));
         }
         return movie;
     }

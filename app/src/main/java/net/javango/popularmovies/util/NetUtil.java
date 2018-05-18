@@ -3,6 +3,8 @@ package net.javango.popularmovies.util;
 import android.net.Uri;
 import android.util.Log;
 
+import net.javango.popularmovies.BuildConfig;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,11 +18,13 @@ public class NetUtil {
     // read content in chunks of this size
     private static final int READ_SIZE = 4096;
 
-    private static final String API_KEY_KEY = "api_key";
-    private static final String API_KEY_VALUE = "7b84851e3c6478817c7567ab12daf8b7";
+    private static final String API_KEY = "api_key";
 
     private static final String BASE_MOVIE_URL = "https://api.themoviedb.org/3/movie";
-    private static final String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185";
+    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p";
+
+    private static final String POSTER_SIZE = "/w185";
+    private static final String BACKDROP_SIZE = "/w342";
 
     private static final String POPULAR_PATH = "popular";
     private static final String TOP_RATED_PATH = "top_rated";
@@ -50,25 +54,17 @@ public class NetUtil {
     }
 
     public static String getPosterUri(String imagePath) {
-        return BASE_POSTER_URL + imagePath;
+        return BASE_IMAGE_URL + POSTER_SIZE + imagePath;
     }
 
-    /**
-     * Returns movie poster URL
-     */
-    public static URL getPosterUrl(String imagePath) throws MalformedURLException {
-        Uri uri = Uri.parse(BASE_POSTER_URL).buildUpon()
-                .appendPath(imagePath)
-                .build();
-
-        URL url = new URL(uri.toString());
-        return url;
+    public static String getBackdropUri(String imagePath) {
+        return BASE_IMAGE_URL + BACKDROP_SIZE + imagePath;
     }
 
     private static URL getMovieUrl(String path) throws MalformedURLException {
         Uri uri = Uri.parse(BASE_MOVIE_URL).buildUpon()
                 .appendPath(path)
-                .appendQueryParameter(API_KEY_KEY, API_KEY_VALUE)
+                .appendQueryParameter(API_KEY, BuildConfig.API_KEY)
                 .build();
 
         URL url = new URL(uri.toString());

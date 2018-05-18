@@ -40,7 +40,7 @@ public class MovieFragment extends Fragment {
         Movie movie = (Movie) getActivity().getIntent().getSerializableExtra(EXTRA_MOVIE);
         getActivity().setTitle(movie.getTitle());
 
-        String posterUri = NetUtil.getPosterUri(movie.getPosterPath());
+        String posterUri = NetUtil.getBackdropUri(movie.getBackdropPath());
         Picasso.with(getContext()).
                 load(posterUri).
                 into(poster);
