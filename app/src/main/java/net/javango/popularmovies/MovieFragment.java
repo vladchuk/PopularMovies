@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import net.javango.popularmovies.util.NetUtil;
+
+import java.text.SimpleDateFormat;
 
 public class MovieFragment extends Fragment {
 
@@ -52,9 +56,13 @@ public class MovieFragment extends Fragment {
                 load(posterUri).
                 into(poster);
 
-        rating.setText(movie.getRating());
-        date.setText(movie.getReleaseDate());
-        votes.setText(movie.getVoteCount());
+        String ratingTxt = Double.toString(movie.getRating());
+        rating.setText(ratingTxt);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        String dateTxt = dateFormat.format(movie.getReleaseDate());
+        date.setText(dateTxt);
+        String votesTxt = Integer.toString(movie.getVoteCount());
+        votes.setText(votesTxt);
         synopsis.setText(movie.getSynopsis());
 
         return view;

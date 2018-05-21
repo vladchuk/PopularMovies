@@ -6,6 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,13 +24,15 @@ public class JsonUtil {
     public static final String RESULTS = "results";
     public static final String VOTE_COUNT = "vote_count";
 
+    private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     /**
      * Parses the full movie from JSON string
      * @param json
      * @return
      * @throws JSONException
      */
-    public static Movie parseJsonMovie(String json) throws JSONException {
+    public static Movie parseJsonMovie(String json) throws Exception {
         JSONObject jsMovie = new JSONObject(json);
         return parseJsonMovie(jsMovie, true);
     }
@@ -37,7 +42,7 @@ public class JsonUtil {
      * @param jsMovie contains a single {@code Movie}
      * @param full if true, all/most movie fields will be parsed, else only minimal set (id, poster, etc.)
      */
-    public static Movie parseJsonMovie(JSONObject jsMovie, boolean full) throws JSONException {
+    public static Movie parseJsonMovie(JSONObject jsMovie, boolean full) throws Exception {
         Movie movie = new Movie();
         movie.setId(jsMovie.getString(ID));
         movie.setPosterPath(jsMovie.getString(POSTER_PATH));
@@ -45,10 +50,11 @@ public class JsonUtil {
         if (full) {
             movie.setTitle((jsMovie.getString(TITLE)));
             movie.setSynopsis(jsMovie.getString(SYNOPSIS));
-            movie.setRating(jsMovie.getString((RATING)));
-            movie.setReleaseDate(jsMovie.getString(RELEASE_DATE));
+            movie.setRating(jsMovie.getDouble((RATING)));
+            Date date = dateFormat.parse(jsMovie.getString(RELEASE_DATE));
+            movie.setReleaseDate(date);
             movie.setBackdropPath(jsMovie.getString(BACKDROP_PATH));
-            movie.setVoteCount(jsMovie.getString(VOTE_COUNT));
+            movie.setVoteCount(jsMovie.getInt(VOTE_COUNT));
         }
         return movie;
     }
@@ -57,7 +63,7 @@ public class JsonUtil {
      * Parses JSON object into a list of movie poster paths
      * @param json contains a page of movies
      */
-    public static List<Movie> parseMovies(String json) throws JSONException {
+    public static List<Movie> parseMovies(String json) throws Exception {
         JSONObject page = new JSONObject(json);
         JSONArray jsMovies = page.getJSONArray(RESULTS);
         List<Movie> list = new LinkedList<>();

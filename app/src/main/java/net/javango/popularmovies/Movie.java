@@ -13,11 +13,11 @@ public class Movie implements Serializable {
     // A plot synopsis (called overview in the api)
     private String synopsis;
     // user rating (called vote_average in the api)
-    private String rating;
+    private double rating;
     // release date
-    private String releaseDate;
+    private Date releaseDate;
     private String backdropPath;
-    private String voteCount;
+    private int voteCount;
 
     public String getId() {
         return id;
@@ -51,19 +51,19 @@ public class Movie implements Serializable {
         this.synopsis = synopsis;
     }
 
-    public String getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -75,11 +75,11 @@ public class Movie implements Serializable {
         this.backdropPath = backdropPath;
     }
 
-    public String getVoteCount() {
+    public int getVoteCount() {
         return voteCount;
     }
 
-    public void setVoteCount(String voteCount) {
+    public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
     }
 }
