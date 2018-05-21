@@ -18,6 +18,7 @@ public class Movie implements Serializable {
     private Date releaseDate;
     private String backdropPath;
     private int voteCount;
+    private double popularity;
 
     public String getId() {
         return id;
@@ -81,5 +82,13 @@ public class Movie implements Serializable {
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
     }
 }

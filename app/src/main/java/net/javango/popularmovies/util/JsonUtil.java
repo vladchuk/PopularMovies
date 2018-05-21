@@ -23,6 +23,7 @@ public class JsonUtil {
     public static final String RELEASE_DATE = "release_date";
     public static final String RESULTS = "results";
     public static final String VOTE_COUNT = "vote_count";
+    public static final String POPULARITY = "popularity";
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -55,6 +56,7 @@ public class JsonUtil {
             movie.setReleaseDate(date);
             movie.setBackdropPath(jsMovie.getString(BACKDROP_PATH));
             movie.setVoteCount(jsMovie.getInt(VOTE_COUNT));
+            movie.setPopularity(jsMovie.getDouble(POPULARITY));
         }
         return movie;
     }

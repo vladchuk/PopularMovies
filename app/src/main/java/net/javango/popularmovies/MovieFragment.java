@@ -43,6 +43,7 @@ public class MovieFragment extends Fragment {
         TextView votes = view.findViewById(R.id.vote_count);
         TextView date = view.findViewById(R.id.movie_date);
         TextView synopsis = view.findViewById(R.id.movie_synopsis);
+        TextView popularity = view.findViewById(R.id.popularity);
 
         Movie movie = (Movie) getActivity().getIntent().getSerializableExtra(EXTRA_MOVIE);
         title.setText(movie.getTitle());
@@ -58,12 +59,14 @@ public class MovieFragment extends Fragment {
 
         String ratingTxt = Double.toString(movie.getRating());
         rating.setText(ratingTxt);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
         String dateTxt = dateFormat.format(movie.getReleaseDate());
         date.setText(dateTxt);
         String votesTxt = Integer.toString(movie.getVoteCount());
         votes.setText(votesTxt);
         synopsis.setText(movie.getSynopsis());
+        String popularityTtx = String.format("%.0f", movie.getPopularity());
+        popularity.setText(popularityTtx);
 
         return view;
     }

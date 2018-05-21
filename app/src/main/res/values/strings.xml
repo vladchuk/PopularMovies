@@ -6,4 +6,5 @@
     <string name="moive_rating_label">Rating:</string>
     <string name="vote_count_label">Votes:</string>
     <string name="movie_date_label">Released:</string>
+    <string name="popularity_label">Popularity:</string>
 </resources>

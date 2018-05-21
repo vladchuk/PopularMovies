@@ -10,19 +10,16 @@
     tools:context=".MovieActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/const_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/backdrop_image"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster_description"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -44,9 +41,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/movie_poster_description"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backdrop_image"/>
+            app:layout_constraintTop_toBottomOf="@+id/backdrop_image"
+            tools:layout_height="200dp"
+            tools:layout_width="150dp"/>
 
         <TextView
             android:id="@+id/rating_label"
@@ -54,7 +54,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:paddingTop="16dp"
             android:text="@string/moive_rating_label"
             app:layout_constraintStart_toEndOf="@+id/poster_image"
             app:layout_constraintTop_toTopOf="@+id/poster_image"/>
@@ -66,60 +65,81 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/rating_label"
-            app:layout_constraintStart_toEndOf="@+id/rating_label"/>
+            app:layout_constraintStart_toEndOf="@+id/rating_label"
+            tools:text="9.5"/>
 
         <TextView
-            android:id="@+id/date_label"
+            android:id="@+id/popularity_label"
             style="@style/movie_label_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/movie_date_label"
-            app:layout_constraintBottom_toBottomOf="@+id/poster_image"
-            app:layout_constraintStart_toStartOf="@+id/vote_count_label"/>
-
-        <TextView
-            android:id="@+id/vote_count_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            style="@style/movie_label_style"
-            android:text="Votes:"
-            app:layout_constraintBottom_toTopOf="@+id/date_label"
+            android:layout_marginTop="8dp"
+            android:text="@string/popularity_label"
             app:layout_constraintStart_toStartOf="@+id/rating_label"
             app:layout_constraintTop_toBottomOf="@+id/rating_label"/>
 
         <TextView
-            android:id="@+id/vote_count"
+            android:id="@+id/popularity"
+            style="@style/movie_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/popularity_label"
+            app:layout_constraintStart_toEndOf="@+id/popularity_label"
+            tools:text="6.4"/>
+
+        <TextView
+            android:id="@+id/popularity2"
             style="@style/movie_text_style"
-            android:text="vote count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/popularity_label"
+            app:layout_constraintStart_toEndOf="@+id/popularity_label"
+            tools:text="6.4"/>
+
+        <TextView
+            android:id="@+id/vote_count_label"
+            style="@style/movie_label_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/vote_count_label"
+            app:layout_constraintStart_toStartOf="@+id/popularity_label"
+            app:layout_constraintTop_toBottomOf="@+id/popularity_label"/>
+
+        <TextView
+            android:id="@+id/vote_count"
+            style="@style/movie_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/vote_count_label"
-            app:layout_constraintStart_toEndOf="@+id/vote_count_label"/>
+            app:layout_constraintStart_toEndOf="@+id/vote_count_label"
+            tools:text="5743"/>
 
         <TextView
             android:id="@+id/movie_date"
             style="@style/movie_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/date_label"
-            app:layout_constraintStart_toEndOf="@+id/date_label"/>
+            app:layout_constraintBottom_toBottomOf="@id/poster_image"
+            app:layout_constraintStart_toStartOf="@+id/vote_count_label"
+            tools:text="May 13, 1996"/>
 
         <TextView
             android:id="@+id/movie_synopsis"
-            android:textSize="16sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/poster_image"
-            app:layout_constraintTop_toBottomOf="@+id/poster_image"/>
+            app:layout_constraintTop_toBottomOf="@+id/poster_image"
+            tools:text="Movie synopsys"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
