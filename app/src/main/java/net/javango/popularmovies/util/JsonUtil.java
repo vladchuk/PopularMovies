@@ -45,7 +45,7 @@ public class JsonUtil {
      */
     public static Movie parseJsonMovie(JSONObject jsMovie, boolean full) throws Exception {
         Movie movie = new Movie();
-        movie.setId(jsMovie.getString(ID));
+        movie.setId(jsMovie.getInt(ID));
         movie.setPosterPath(jsMovie.getString(POSTER_PATH));
 
         if (full) {

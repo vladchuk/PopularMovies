@@ -1,30 +1,32 @@
 package net.javango.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
 
-    private String id;
-    // original title
+    private int id;
     private String title;
-    // movie poster image thumbnail
     private String posterPath;
-    // A plot synopsis (called overview in the api)
     private String synopsis;
-    // user rating (called vote_average in the api)
     private double rating;
-    // release date
     private Date releaseDate;
     private String backdropPath;
     private int voteCount;
     private double popularity;
 
-    public String getId() {
+    public Movie() {
+        // noargs
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -91,4 +93,45 @@ public class Movie implements Serializable {
     public void setPopularity(double popularity) {
         this.popularity = popularity;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(getPosterPath());
+        dest.writeString(synopsis);
+        dest.writeDouble(rating);
+        dest.writeLong(releaseDate.getTime());
+        dest.writeString(backdropPath);
+        dest.writeInt(voteCount);
+        dest.writeDouble(popularity);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    private Movie(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        posterPath = in.readString();
+        synopsis = in.readString();
+        rating = in.readDouble();
+        releaseDate = new Date(in.readLong());
+        backdropPath = in.readString();
+        voteCount = in.readInt();
+        popularity = in.readDouble();
+    }
+
 }

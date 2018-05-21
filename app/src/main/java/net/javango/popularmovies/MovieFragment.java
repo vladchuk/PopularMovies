@@ -45,7 +45,7 @@ public class MovieFragment extends Fragment {
         TextView synopsis = view.findViewById(R.id.movie_synopsis);
         TextView popularity = view.findViewById(R.id.popularity);
 
-        Movie movie = (Movie) getActivity().getIntent().getSerializableExtra(EXTRA_MOVIE);
+        Movie movie = (Movie) getActivity().getIntent().getParcelableExtra(EXTRA_MOVIE);
         title.setText(movie.getTitle());
 
         String backdropUri = NetUtil.getBackdropUri(movie.getBackdropPath());
