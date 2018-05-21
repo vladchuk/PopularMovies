@@ -16,6 +16,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MovieListActivity" />
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />

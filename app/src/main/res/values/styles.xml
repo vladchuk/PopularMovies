@@ -9,15 +9,19 @@
     </style>
 
     <style name="movie_label_style">
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="movie_text_style">
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+    <style name="movie_title">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">32sp</item>
     </style>
 
 </resources>

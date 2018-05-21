@@ -4,6 +4,6 @@
     <string name="sort_rating">Sort by Rating</string>
     <string name="movie_poster_description">Movie Poster</string>
     <string name="moive_rating_label">Rating:</string>
-    <string name="movie_date_label">Release Date:</string>
-    <string name="movie_synopsis_label">Synopsis:</string>
+    <string name="vote_count_label">Votes:</string>
+    <string name="movie_date_label">Released:</string>
 </resources>

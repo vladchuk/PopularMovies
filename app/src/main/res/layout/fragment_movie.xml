@@ -2,60 +2,124 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CCF5FF"
     tools:context=".MovieActivity">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/const_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/backdrop_image"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/movie_poster_description"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/movie_title"
+            style="@style/movie_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="@+id/backdrop_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Movie Title"/>
 
         <ImageView
             android:id="@+id/poster_image"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/movie_poster_description"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backdrop_image"/>
 
         <TextView
+            android:id="@+id/rating_label"
             style="@style/movie_label_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
             android:paddingTop="16dp"
-            android:text="@string/moive_rating_label" />
+            android:text="@string/moive_rating_label"
+            app:layout_constraintStart_toEndOf="@+id/poster_image"
+            app:layout_constraintTop_toTopOf="@+id/poster_image"/>
 
         <TextView
             android:id="@+id/movie_rating"
             style="@style/movie_text_style"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/rating_label"
+            app:layout_constraintStart_toEndOf="@+id/rating_label"/>
 
         <TextView
+            android:id="@+id/date_label"
             style="@style/movie_label_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/movie_date_label"/>
+            android:layout_marginBottom="8dp"
+            android:text="@string/movie_date_label"
+            app:layout_constraintBottom_toBottomOf="@+id/poster_image"
+            app:layout_constraintStart_toStartOf="@+id/vote_count_label"/>
+
+        <TextView
+            android:id="@+id/vote_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            style="@style/movie_label_style"
+            android:text="Votes:"
+            app:layout_constraintBottom_toTopOf="@+id/date_label"
+            app:layout_constraintStart_toStartOf="@+id/rating_label"
+            app:layout_constraintTop_toBottomOf="@+id/rating_label"/>
+
+        <TextView
+            android:id="@+id/vote_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            style="@style/movie_text_style"
+            android:text="vote count"
+            app:layout_constraintBottom_toBottomOf="@+id/vote_count_label"
+            app:layout_constraintStart_toEndOf="@+id/vote_count_label"/>
 
         <TextView
             android:id="@+id/movie_date"
             style="@style/movie_text_style"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            style="@style/movie_label_style"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/movie_synopsis_label"/>
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/date_label"
+            app:layout_constraintStart_toEndOf="@+id/date_label"/>
 
         <TextView
             android:id="@+id/movie_synopsis"
             style="@style/movie_text_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/poster_image"
+            app:layout_constraintTop_toBottomOf="@+id/poster_image"/>
+
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>
