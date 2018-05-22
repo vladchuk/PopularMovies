@@ -1,6 +1,5 @@
 package net.javango.popularmovies;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,7 +44,6 @@ public class MovieListFragment extends Fragment
                 false);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
-        List<Movie> movies = getMovies();
         mMovieAdapter = new MovieAdapter(getActivity());
         mRecyclerView.setAdapter(mMovieAdapter);
         getActivity().setTitle(R.string.app_name);
@@ -56,10 +54,6 @@ public class MovieListFragment extends Fragment
         // start
         getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
         return view;
-    }
-
-    private List<Movie> getMovies() {
-        return null;
     }
 
     static class MovieLoader extends AsyncTaskLoader<List<Movie>> {

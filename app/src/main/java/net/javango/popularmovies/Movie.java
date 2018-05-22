@@ -3,7 +3,6 @@ package net.javango.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.Date;
 
 public class Movie implements Parcelable {

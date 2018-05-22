@@ -14,16 +14,16 @@ import java.util.List;
 
 public class JsonUtil {
 
-    public static final String ID = "id";
-    public static final String TITLE = "title";
-    public static final String POSTER_PATH = "poster_path";
-    public static final String BACKDROP_PATH = "backdrop_path";
-    public static final String SYNOPSIS = "overview";
-    public static final String RATING = "vote_average";
-    public static final String RELEASE_DATE = "release_date";
-    public static final String RESULTS = "results";
-    public static final String VOTE_COUNT = "vote_count";
-    public static final String POPULARITY = "popularity";
+    private static final String ID = "id";
+    private static final String TITLE = "title";
+    private static final String POSTER_PATH = "poster_path";
+    private static final String BACKDROP_PATH = "backdrop_path";
+    private static final String SYNOPSIS = "overview";
+    private static final String RATING = "vote_average";
+    private static final String RELEASE_DATE = "release_date";
+    private static final String RESULTS = "results";
+    private static final String VOTE_COUNT = "vote_count";
+    private static final String POPULARITY = "popularity";
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -33,7 +33,7 @@ public class JsonUtil {
      * @return
      * @throws JSONException
      */
-    public static Movie parseJsonMovie(String json) throws Exception {
+    private static Movie parseJsonMovie(String json) throws Exception {
         JSONObject jsMovie = new JSONObject(json);
         return parseJsonMovie(jsMovie, true);
     }
@@ -43,7 +43,7 @@ public class JsonUtil {
      * @param jsMovie contains a single {@code Movie}
      * @param full if true, all/most movie fields will be parsed, else only minimal set (id, poster, etc.)
      */
-    public static Movie parseJsonMovie(JSONObject jsMovie, boolean full) throws Exception {
+    private static Movie parseJsonMovie(JSONObject jsMovie, boolean full) throws Exception {
         Movie movie = new Movie();
         movie.setId(jsMovie.getInt(ID));
         movie.setPosterPath(jsMovie.getString(POSTER_PATH));

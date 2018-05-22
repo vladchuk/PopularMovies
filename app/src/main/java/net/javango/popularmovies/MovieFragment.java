@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.format.DateFormat;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +43,7 @@ public class MovieFragment extends Fragment {
         TextView synopsis = view.findViewById(R.id.movie_synopsis);
         TextView popularity = view.findViewById(R.id.popularity);
 
-        Movie movie = (Movie) getActivity().getIntent().getParcelableExtra(EXTRA_MOVIE);
+        Movie movie = getActivity().getIntent().getParcelableExtra(EXTRA_MOVIE);
         title.setText(movie.getTitle());
 
         String backdropUri = NetUtil.getBackdropUri(movie.getBackdropPath());

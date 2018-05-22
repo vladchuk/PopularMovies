@@ -11,7 +11,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/backdrop_image"
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:text="@string/moive_rating_label"
+            android:text="@string/movie_rating_label"
             app:layout_constraintStart_toEndOf="@+id/poster_image"
             app:layout_constraintTop_toTopOf="@+id/poster_image"/>
 
@@ -139,7 +139,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/poster_image"
             app:layout_constraintTop_toBottomOf="@+id/poster_image"
-            tools:text="Movie synopsys"/>
+            tools:text="Movie synopsis"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

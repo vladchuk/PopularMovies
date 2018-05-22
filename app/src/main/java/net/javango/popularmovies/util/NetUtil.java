@@ -1,14 +1,10 @@
 package net.javango.popularmovies.util;
 
 import android.net.Uri;
-import android.util.Log;
 
 import net.javango.popularmovies.BuildConfig;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -38,7 +34,7 @@ public class NetUtil {
         try {
             conn = (HttpURLConnection) url.openConnection();
             reader = new InputStreamReader(conn.getInputStream(), "UTF-8");
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             char[] chars = new char[READ_SIZE];
             int readCount;
             while ((readCount = reader.read(chars)) != -1) {
@@ -72,7 +68,7 @@ public class NetUtil {
     }
 
     /**
-     * Returs URL for popular movies
+     * Returns URL for popular movies
      */
     public static URL getPopularUrl() throws MalformedURLException {
         return getMovieUrl(POPULAR_PATH);
