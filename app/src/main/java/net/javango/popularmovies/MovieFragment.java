@@ -55,6 +55,7 @@ public class MovieFragment extends Fragment {
         String posterUri = NetUtil.getBackdropUri(movie.getPosterPath());
         Picasso.with(getContext()).
                 load(posterUri).
+                placeholder(R.drawable.poster_placeholder).
                 into(poster);
 
         String ratingTxt = Double.toString(movie.getRating());
