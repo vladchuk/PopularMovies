@@ -20,12 +20,14 @@ import java.text.SimpleDateFormat;
 
 public class MovieFragment extends Fragment {
 
-    private static final String EXTRA_MOVIE = "net.javango.popularmovies.movie";
+    private static final String ARG_MOVIE = "movie";
 
-    public static Intent newIntent(Context context, Movie movie) {
-        Intent intent = new Intent(context, MovieActivity.class);
-        intent.putExtra(EXTRA_MOVIE, movie);
-        return intent;
+    public static MovieFragment newInstance(Movie movie) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_MOVIE, movie);
+        MovieFragment fragment = new MovieFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Nullable
@@ -43,7 +45,7 @@ public class MovieFragment extends Fragment {
         TextView synopsis = view.findViewById(R.id.movie_synopsis);
         TextView popularity = view.findViewById(R.id.popularity);
 
-        Movie movie = getActivity().getIntent().getParcelableExtra(EXTRA_MOVIE);
+        Movie movie = getArguments().getParcelable(ARG_MOVIE);
         title.setText(movie.getTitle());
 
         String backdropUri = NetUtil.getBackdropUri(movie.getBackdropPath());

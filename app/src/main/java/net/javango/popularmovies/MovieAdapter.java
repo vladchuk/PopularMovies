@@ -67,7 +67,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
 
         @Override
         public void onClick(View v) {
-            Intent intent = MovieFragment.newIntent(mContext, mMovie);
+            Intent intent = MovieActivity.newIntent(mContext, mMovie);
             mContext.startActivity(intent);
         }
     }
