@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import net.javango.popularmovies.util.MovieContext;
 import net.javango.popularmovies.util.NetUtil;
 
 import java.text.SimpleDateFormat;
@@ -21,10 +22,12 @@ import java.text.SimpleDateFormat;
 public class MovieFragment extends Fragment {
 
     private static final String ARG_MOVIE = "movie";
+    private static final String ARG_MOVIE_CONTEXT = "movieContext";
 
-    public static MovieFragment newInstance(Movie movie) {
+    public static MovieFragment newInstance(Movie movie, MovieContext movieContext) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_MOVIE, movie);
+        args.putParcelable(ARG_MOVIE_CONTEXT, movieContext);
         MovieFragment fragment = new MovieFragment();
         fragment.setArguments(args);
         return fragment;

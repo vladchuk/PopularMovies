@@ -13,22 +13,36 @@ import com.squareup.picasso.Picasso;
 
 import net.javango.popularmovies.util.NetUtil;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder> {
 
     private Context mContext;
     private List<Movie> mMovies;
+    private int movieContext;
 
     public MovieAdapter(Context context) {
         mContext = context;
     }
 
+    public int getMovieContext() {
+        return movieContext;
+    }
+
     /**
      * Set the data and notify observers
      */
-    public void setData(List<Movie> data) {
+    public void setData(List<Movie> data, int movieContext) {
         mMovies = data;
+        this.movieContext = movieContext;
+        notifyDataSetChanged();
+    }
+
+    public void appendData(List<Movie> data) {
+        if (mMovies == null)
+            mMovies = new LinkedList<>();
+        mMovies.addAll(data);
         notifyDataSetChanged();
     }
 
@@ -47,6 +61,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
         String posterUri = NetUtil.getPosterUri(movie.getPosterPath());
         Picasso.with(mContext).
                 load(posterUri).
+                placeholder(R.drawable.poster_placeholder).
                 into(holder.mImageView);
     }
 
