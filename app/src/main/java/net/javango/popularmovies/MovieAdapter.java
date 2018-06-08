@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import net.javango.popularmovies.util.MovieContext;
 import net.javango.popularmovies.util.NetUtil;
 
 import java.util.LinkedList;
@@ -24,10 +25,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
 
     public MovieAdapter(Context context) {
         mContext = context;
-    }
-
-    public int getMovieContext() {
-        return movieContext;
     }
 
     /**
@@ -58,6 +55,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
     public void onBindViewHolder(@NonNull MovieHolder holder, int position) {
         Movie movie = mMovies.get(position);
         holder.mMovie = movie;
+        holder.position = position + 1;
         String posterUri = NetUtil.getPosterUri(movie.getPosterPath());
         Picasso.with(mContext).
                 load(posterUri).
@@ -73,6 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
     class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImageView;
         private Movie mMovie;
+        private int position;
 
         public MovieHolder(View itemView) {
             super(itemView);
@@ -82,7 +81,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
 
         @Override
         public void onClick(View v) {
-            Intent intent = MovieActivity.newIntent(mContext, mMovie);
+            MovieContext cxt = new MovieContext(movieContext, position);
+            Intent intent = MovieActivity.newIntent(mContext, mMovie, cxt);
             mContext.startActivity(intent);
         }
     }

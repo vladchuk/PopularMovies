@@ -36,8 +36,7 @@ public class MovieListFragment extends Fragment
     private MovieAdapter mMovieAdapter;
     private GridLayoutManager layoutManager;
 
-    private static int mSortState = R.id.sort_popularity;
-
+    private static int movieContext = MovieContext.MOST_POPULAR;
 
     //PaginationAdapter adapter;
     private ProgressBar progressBar;
@@ -62,10 +61,10 @@ public class MovieListFragment extends Fragment
         mRecyclerView.setLayoutManager(layoutManager);
 
         mMovieAdapter = new MovieAdapter(getActivity());
+        mMovieAdapter.setData(null, movieContext);
         mRecyclerView.setAdapter(mMovieAdapter);
         RecyclerView.OnScrollListener scrollListener = new MovieScrollListener(layoutManager);
         mRecyclerView.addOnScrollListener(scrollListener);
-        getActivity().setTitle(R.string.app_name);
 
         // enable menu
         setHasOptionsMenu(true);
@@ -76,9 +75,8 @@ public class MovieListFragment extends Fragment
     }
 
     private void setTitle() {
-        String title = mSortState == R.id.sort_popularity ? getString(R.string.sort_popularity) :
+        String title = movieContext == MovieContext.MOST_POPULAR ? getString(R.string.sort_popularity) :
                 getString(R.string.sort_rating);
-        title += "page " + currentPage + " of " + TOTAL_PAGES;
         getActivity().setTitle(title);
     }
 
@@ -104,7 +102,8 @@ public class MovieListFragment extends Fragment
         @Override
         public List<Movie> loadInBackground() {
             try {
-                URL url = mSortState == R.id.sort_popularity ? NetUtil.getPopularUrl(mFragment.currentPage) : NetUtil
+                URL url = movieContext == MovieContext.MOST_POPULAR ? NetUtil
+                        .getPopularUrl(mFragment.currentPage) : NetUtil
                         .getTopRatedUrl(mFragment.currentPage);
                 String json = NetUtil.getContent(url);
                 List<Movie> movies = JsonUtil.parseMovies(json);
@@ -141,12 +140,16 @@ public class MovieListFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_movies, menu);
-        menu.findItem(mSortState).setChecked(true);
+        int id;
+        if (movieContext == MovieContext.MOST_POPULAR)
+            id = R.id.sort_popularity;
+        else
+            id = R.id.sort_rating;
+        menu.findItem(id).setChecked(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int movieContext = 0;
         int id = item.getItemId();
         switch (id) {
             case R.id.sort_popularity:
@@ -157,6 +160,7 @@ public class MovieListFragment extends Fragment
                 break;
         }
         item.setChecked(true);
+        setTitle();
 
         currentPage = 1;
         mMovieAdapter.setData(null, movieContext);
@@ -175,8 +179,12 @@ public class MovieListFragment extends Fragment
         protected void loadMoreItems() {
             isLoading = true;
             currentPage += 1; //Increment page index to load the next one
-            loadNextPage();
-            setTitle();
+
+            getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MovieListFragment.this);
+            isLoading = false;
+
+            if (currentPage == getTotalPageCount())
+                isLastPage = true;
         }
 
         @Override
@@ -193,16 +201,5 @@ public class MovieListFragment extends Fragment
         public boolean isLoading() {
             return isLoading;
         }
-    }
-
-    private void loadNextPage() {
-        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
-//        adapter.removeLoadingFooter();  // 2
-        isLoading = false;   // 3
-
-//        adapter.addAll(movies);   // 4
-
-        if (currentPage != TOTAL_PAGES) ;// adapter.addLoadingFooter();  // 5
-        else isLastPage = true;
     }
 }

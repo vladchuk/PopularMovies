@@ -72,6 +72,13 @@ public class MovieFragment extends Fragment {
         String popularityTtx = String.format("%.0f", movie.getPopularity());
         popularity.setText(popularityTtx);
 
+        setTitle();
         return view;
+    }
+
+    private void setTitle() {
+        MovieContext movieContext = getArguments().getParcelable(ARG_MOVIE_CONTEXT);
+        String base = getString(movieContext.getContext() == MovieContext.MOST_POPULAR ? R.string.sort_popularity : R.string.sort_rating);
+        getActivity().setTitle(base + " #" + movieContext.getPosition());
     }
 }
