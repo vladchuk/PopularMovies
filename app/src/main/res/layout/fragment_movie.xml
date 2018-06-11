@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <!--ImageView
             android:id="@+id/backdrop_image"
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -21,7 +21,7 @@
             android:contentDescription="@string/movie_poster_description"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"/-->
 
         <TextView
             android:id="@+id/movie_title"
@@ -30,7 +30,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="4dp"
             android:paddingStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/backdrop_image"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Movie Title"/>
 
@@ -44,7 +43,7 @@
             android:contentDescription="@string/movie_poster_description"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backdrop_image"
+            app:layout_constraintTop_toBottomOf="@+id/movie_title"
             tools:layout_height="200dp"
             tools:layout_width="150dp"/>
 

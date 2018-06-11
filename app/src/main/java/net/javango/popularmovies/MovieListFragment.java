@@ -42,7 +42,7 @@ public class MovieListFragment extends Fragment
     // if page is currently loading
     private static volatile boolean isLoading;
     // total number of pages
-    private static int TOTAL_PAGES = 2;
+    private static int TOTAL_PAGES = 5;
     // indicates the current page being loaded
     private static volatile int currentPage = 1;
 

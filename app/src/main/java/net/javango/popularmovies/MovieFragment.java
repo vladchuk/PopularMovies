@@ -40,7 +40,7 @@ public class MovieFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         TextView title = view.findViewById(R.id.movie_title);
-        ImageView backdrop = view.findViewById(R.id.backdrop_image);
+//        ImageView backdrop = view.findViewById(R.id.backdrop_image);
         ImageView poster = view.findViewById(R.id.poster_image);
         TextView rating = view.findViewById(R.id.movie_rating);
         TextView votes = view.findViewById(R.id.vote_count);
@@ -52,9 +52,9 @@ public class MovieFragment extends Fragment {
         title.setText(movie.getTitle());
 
         String backdropUri = NetUtil.getBackdropUri(movie.getBackdropPath());
-        Picasso.with(getContext()).
-                load(backdropUri).
-                into(backdrop);
+//        Picasso.with(getContext()).
+//                load(backdropUri).
+//                into(backdrop);
         String posterUri = NetUtil.getBackdropUri(movie.getPosterPath());
         Picasso.with(getContext()).
                 load(posterUri).
