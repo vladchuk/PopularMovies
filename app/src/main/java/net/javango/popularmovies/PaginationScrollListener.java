@@ -2,6 +2,7 @@ package net.javango.popularmovies;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 /**
  * Pagination
@@ -29,6 +30,12 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
+        Log.i("Scroller", "firstVisiblePos=" + firstVisibleItemPosition);
+        Log.i("Scroller", "visibleItems=" + visibleItemCount);
+        Log.i("Scroller", "totalItems=" + totalItemCount);
+        Log.i("Scroller", "loading=" + isLoading());
+        Log.i("Scroller", "lastPage=" + isLastPage());
+
         if (!isLoading() && !isLastPage()) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                 && firstVisibleItemPosition >= 0) {
@@ -39,11 +46,7 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
     }
 
     protected abstract void loadMoreItems();
-
-    public abstract int getTotalPageCount();
-
     public abstract boolean isLastPage();
-
     public abstract boolean isLoading();
 
 }

@@ -19,12 +19,15 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder> {
 
+    // static to preserve state between transitions
+    private static List<Movie> mMovies;
+
     private Context mContext;
-    private List<Movie> mMovies;
     private int movieContext;
 
-    public MovieAdapter(Context context) {
+    public MovieAdapter(Context context, int movieContext) {
         mContext = context;
+        this.movieContext = movieContext;
     }
 
     /**

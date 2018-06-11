@@ -17,7 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import net.javango.popularmovies.util.JsonUtil;
 import net.javango.popularmovies.util.MovieContext;
@@ -29,6 +29,7 @@ import java.util.List;
 public class MovieListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
+    private static final String ARG_CAN_LOAD = "canLoad";
     private static final String TAG = MovieListActivity.class.getSimpleName();
     private static final int MOVIE_LOADER_ID = 13;
 
@@ -38,17 +39,12 @@ public class MovieListFragment extends Fragment
 
     private static int movieContext = MovieContext.MOST_POPULAR;
 
-    //PaginationAdapter adapter;
-    private ProgressBar progressBar;
-    // Indicates if footer ProgressBar is shown (i.e. next page is loading)
-    private boolean isLoading = false;
-    // If current page the last page (Pagination will stop after this page load)
-    private boolean isLastPage = false;
-    // total no. of pages to load. Initial load is page 0, after which 2 more pages will load.
-    private int TOTAL_PAGES = 100;
-    // indicates the current page which Pagination is fetching.
-    private int currentPage = 1;
-
+    // if page is currently loading
+    private static volatile boolean isLoading;
+    // total number of pages
+    private static int TOTAL_PAGES = 2;
+    // indicates the current page being loaded
+    private static volatile int currentPage = 1;
 
     @Nullable
     @Override
@@ -60,8 +56,8 @@ public class MovieListFragment extends Fragment
                 false);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mMovieAdapter = new MovieAdapter(getActivity());
-        mMovieAdapter.setData(null, movieContext);
+        mMovieAdapter = new MovieAdapter(getActivity(), movieContext);
+//        mMovieAdapter.setData(null, movieContext);
         mRecyclerView.setAdapter(mMovieAdapter);
         RecyclerView.OnScrollListener scrollListener = new MovieScrollListener(layoutManager);
         mRecyclerView.addOnScrollListener(scrollListener);
@@ -70,8 +66,15 @@ public class MovieListFragment extends Fragment
         setHasOptionsMenu(true);
 
         // start
-        getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
+        if (currentPage == 1)
+            getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
     }
 
     private void setTitle() {
@@ -80,18 +83,29 @@ public class MovieListFragment extends Fragment
         getActivity().setTitle(title);
     }
 
+    private void restartLoader(boolean canLoad) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ARG_CAN_LOAD, canLoad);
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, bundle, MovieListFragment.this);
+    }
+
     static class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
         private List<Movie> movies;
         private MovieListFragment mFragment;
+        private boolean canLoad;
 
-        public MovieLoader(MovieListFragment fragment) {
+        public MovieLoader(MovieListFragment fragment, boolean canLoad) {
             super(fragment.getContext());
             mFragment = fragment;
+            this.canLoad = canLoad;
         }
 
         @Override
         protected void onStartLoading() {
+            if (!canLoad)
+                return;
+
             if (movies != null) {
                 deliverResult(movies);
             } else {
@@ -102,14 +116,14 @@ public class MovieListFragment extends Fragment
         @Override
         public List<Movie> loadInBackground() {
             try {
-                URL url = movieContext == MovieContext.MOST_POPULAR ? NetUtil
-                        .getPopularUrl(mFragment.currentPage) : NetUtil
-                        .getTopRatedUrl(mFragment.currentPage);
+                int page = mFragment.currentPage;
+                URL url = movieContext == MovieContext.MOST_POPULAR ?
+                        NetUtil.getPopularUrl(page) : NetUtil.getTopRatedUrl(page);
                 String json = NetUtil.getContent(url);
                 List<Movie> movies = JsonUtil.parseMovies(json);
                 return movies;
             } catch (Exception e) {
-                Log.e(TAG, "Failed to load movies!", e);
+                Log.e(TAG, "Failed to load movies:", e);
                 return null;
             }
         }
@@ -124,17 +138,26 @@ public class MovieListFragment extends Fragment
     @NonNull
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
-        return new MovieLoader(this);
+        boolean canLoad = args == null || args.getBoolean(ARG_CAN_LOAD);
+        return new MovieLoader(this, canLoad);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> data) {
-        mMovieAdapter.appendData(data);
+        isLoading = false;
+        if (data != null) {
+            mMovieAdapter.appendData(data);
+        } else
+            Toast.makeText(getActivity(), "Failed to load movies!", Toast.LENGTH_LONG).show();
+//        if (isLastPage()) {
+//            getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
+//        }
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
         // not implemented
+        int i = 0;
     }
 
     @Override
@@ -164,9 +187,13 @@ public class MovieListFragment extends Fragment
 
         currentPage = 1;
         mMovieAdapter.setData(null, movieContext);
-        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+        restartLoader(true);
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isLastPage() {
+        return currentPage >= TOTAL_PAGES;
     }
 
     private class MovieScrollListener extends PaginationScrollListener {
@@ -179,26 +206,19 @@ public class MovieListFragment extends Fragment
         protected void loadMoreItems() {
             isLoading = true;
             currentPage += 1; //Increment page index to load the next one
-
-            getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MovieListFragment.this);
-            isLoading = false;
-
-            if (currentPage == getTotalPageCount())
-                isLastPage = true;
-        }
-
-        @Override
-        public int getTotalPageCount() {
-            return TOTAL_PAGES;
+            restartLoader(true);
         }
 
         @Override
         public boolean isLastPage() {
-            return isLastPage;
+            Log.i(TAG, "Current page: " + currentPage);
+            return MovieListFragment.this.isLastPage();
         }
 
         @Override
         public boolean isLoading() {
+            if (isLoading)
+                Log.i(TAG, "Loading.......................");
             return isLoading;
         }
     }
