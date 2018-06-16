@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import net.javango.popularmovies.model.Movie;
 import net.javango.popularmovies.util.MovieContext;
 import net.javango.popularmovies.util.NetUtil;
 

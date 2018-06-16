@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import net.javango.popularmovies.model.Movie;
 import net.javango.popularmovies.util.JsonUtil;
 import net.javango.popularmovies.util.MovieContext;
 import net.javango.popularmovies.util.NetUtil;

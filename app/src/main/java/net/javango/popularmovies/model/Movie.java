@@ -1,4 +1,4 @@
-package net.javango.popularmovies;
+package net.javango.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,6 +1,6 @@
 package net.javango.popularmovies.util;
 
-import net.javango.popularmovies.Movie;
+import net.javango.popularmovies.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
