@@ -26,6 +26,10 @@ public class NetUtil {
     private static final String TOP_RATED_PATH = "top_rated";
     private static final String PAGE = "page";
 
+    private static final String VIDEOS = "videos";
+    private static final String REVIEWS = "rewies";
+
+
     /**
      * Reads the contents of URL as String
      */
@@ -83,4 +87,28 @@ public class NetUtil {
         return getMovieUrl(TOP_RATED_PATH, page);
     }
 
+    private static URL getMetadataUrl(int movieId, String metadata) throws MalformedURLException {
+        Uri uri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                .appendPath(String.valueOf(movieId))
+                .appendPath(metadata)
+                .appendQueryParameter(API_KEY, BuildConfig.API_KEY)
+                .build();
+
+        URL url = new URL(uri.toString());
+        return url;
+    }
+
+    /**
+     * Returns videos (trailers) for specified movie
+     */
+    public static URL getVideosUrl(int movieId) throws MalformedURLException {
+        return getMetadataUrl(movieId, VIDEOS);
+    }
+
+    /**
+     * Returns reviews for specified movie
+     */
+    public static URL getReviewsUrl(int movieId) throws MalformedURLException {
+        return getMetadataUrl(movieId, REVIEWS);
+    }
 }

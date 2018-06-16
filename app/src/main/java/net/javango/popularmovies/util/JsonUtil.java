@@ -1,6 +1,8 @@
 package net.javango.popularmovies.util;
 
 import net.javango.popularmovies.model.Movie;
+import net.javango.popularmovies.model.Review;
+import net.javango.popularmovies.model.Video;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +26,12 @@ public class JsonUtil {
     private static final String RESULTS = "results";
     private static final String VOTE_COUNT = "vote_count";
     private static final String POPULARITY = "popularity";
+
+    private static final String VIDEO_SITE = "site";
+    private static final String VIDEO_KEY = "key";
+    private static final String REVIEW_AUTHOR = "author";
+    private static final String REVIEW_CONTENT = "content";
+
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -76,4 +84,43 @@ public class JsonUtil {
         }
         return list;
     }
+
+    /**
+     * Parses JSON object into a list of movie videos
+     * @param json contains a page of videos
+     */
+    public static List<Video> parseVideos(String json) throws Exception {
+        JSONObject page = new JSONObject(json);
+        JSONArray jsVideos = page.getJSONArray(RESULTS);
+        List<Video> list = new LinkedList<>();
+        for (int i = 0; i < jsVideos.length(); i++) {
+            JSONObject jsVideo = jsVideos.getJSONObject(i);
+            String site = jsVideo.getString(VIDEO_SITE);
+            String key = jsVideo.getString(VIDEO_KEY);
+            Video video = new Video(site, key);
+            list.add(video);
+        }
+        return list;
+    }
+
+    /**
+     * Parses JSON object into a list of movie reviews
+     * @param json contains a page of reviews
+     */
+    public static List<Review> parseReviews(String json) throws Exception {
+        JSONObject page = new JSONObject(json);
+        JSONArray jsReviews = page.getJSONArray(RESULTS);
+        List<Review> list = new LinkedList<>();
+        for (int i = 0; i < jsReviews.length(); i++) {
+            JSONObject jsReview = jsReviews.getJSONObject(i);
+            String author = jsReview.getString(REVIEW_AUTHOR);
+            String content = jsReview.getString(REVIEW_CONTENT);
+            Review review = new Review(author, content);
+            list.add(review);
+        }
+        return list;
+    }
+
 }
+
+

@@ -7,9 +7,9 @@ public class Video {
     private String key;
     private String site;
 
-    public Video(String key, String site) {
-        this.key = key;
+    public Video(String site, String key) {
         this.site = site;
+        this.key = key;
     }
 
     public String getPath() {
