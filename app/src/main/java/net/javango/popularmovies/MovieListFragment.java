@@ -158,7 +158,6 @@ public class MovieListFragment extends Fragment
     @Override
     public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
         // not implemented
-        int i = 0;
     }
 
     @Override

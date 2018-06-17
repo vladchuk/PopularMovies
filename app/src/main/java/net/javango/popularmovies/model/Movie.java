@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.List;
 
 public class Movie implements Parcelable {
 
@@ -16,6 +17,10 @@ public class Movie implements Parcelable {
     private String backdropPath;
     private int voteCount;
     private double popularity;
+
+    // these fields are not serialized, as they are loaded separately
+    private transient List<Video> videos;
+    private transient List<Review> reviews;
 
     public Movie() {
         // noargs
@@ -133,4 +138,19 @@ public class Movie implements Parcelable {
         popularity = in.readDouble();
     }
 
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 }

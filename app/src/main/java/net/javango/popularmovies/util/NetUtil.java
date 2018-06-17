@@ -27,7 +27,7 @@ public class NetUtil {
     private static final String PAGE = "page";
 
     private static final String VIDEOS = "videos";
-    private static final String REVIEWS = "rewies";
+    private static final String REVIEWS = "reviews";
 
 
     /**
