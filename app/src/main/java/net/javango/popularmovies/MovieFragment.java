@@ -1,5 +1,7 @@
 package net.javango.popularmovies;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,11 +9,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +43,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int METADATA_LOADER_ID = 14;
 
     private Movie movie;
+    private ViewGroup videoLayout;
+    private ViewGroup reviewLayout;
 
     public static MovieFragment newInstance(Movie movie, MovieContext movieContext) {
         Bundle args = new Bundle();
@@ -61,6 +69,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         TextView date = view.findViewById(R.id.movie_date);
         TextView synopsis = view.findViewById(R.id.movie_synopsis);
         TextView popularity = view.findViewById(R.id.popularity);
+        videoLayout = view.findViewById(R.id.videos_list);
+        reviewLayout = view.findViewById(R.id.reviews_list);
 
         movie = getArguments().getParcelable(ARG_MOVIE);
         title.setText(movie.getTitle());
@@ -87,13 +97,49 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         popularity.setText(popularityTtx);
 
         setTitle();
+        if (movie.getVideos() == null)
         getLoaderManager().initLoader(METADATA_LOADER_ID, savedInstanceState, this);
         return view;
     }
 
+    private void populateVideos() {
+        int ind = 0;
+        for (Video video : movie.getVideos()) {
+            ind++;
+            View videoView = LayoutInflater.from(getContext()).inflate(R.layout.video_item, null);
+//            TextView textView = videoView.findViewById(R.id.video_name);
+//            textView.setText("#" + ind);
+
+            Button play = videoView.findViewById(R.id.play_button);
+            play.setText("#" + ind);
+            play.setOnClickListener(v -> {
+                Uri uri = Uri.parse(video.getPath());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            });
+            videoLayout.addView(videoView);
+        }
+    }
+
+    private void populateReviews() {
+        int ind = 0;
+        for (Review review : movie.getReviews()) {
+            ind++;
+            View reviewView = LayoutInflater.from(getContext()).inflate(R.layout.review_item, null);
+            TextView headerView = reviewView.findViewById(R.id.review_header);
+            String header = "#" + ind + " by " + review.getAuthor();
+            headerView.setText(header);
+            TextView contentView = reviewView.findViewById(R.id.review_content);
+            contentView.setText(review.getContent());
+            reviewLayout.addView(reviewView);
+        }
+    }
+
     private void setTitle() {
         MovieContext movieContext = getArguments().getParcelable(ARG_MOVIE_CONTEXT);
-        String base = getString(movieContext.getContext() == MovieContext.MOST_POPULAR ? R.string.sort_popularity : R.string.sort_rating);
+        String base = getString(movieContext
+                                        .getContext() == MovieContext.MOST_POPULAR ? R.string.sort_popularity : R
+                .string.sort_rating);
         getActivity().setTitle(base + " #" + movieContext.getPosition());
     }
 
@@ -163,10 +209,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(@NonNull Loader<Movie> loader, Movie metadata) {
         if (metadata != null) {
-            updateMovie(metadata);
+            if (movie.getVideos() == null) {
+                updateMovie(metadata);
+                populateVideos();
+                populateReviews();
+            }
         }
         else {
-            Toast.makeText(getActivity(), "Failed to update movie!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Failed to fetch metadata!", Toast.LENGTH_LONG).show();
         }
     }
 

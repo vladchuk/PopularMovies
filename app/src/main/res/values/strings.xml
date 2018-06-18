@@ -8,4 +8,6 @@
     <string name="movie_date_label">Released:</string>
     <string name="popularity_label">Popularity:</string>
     <string name="video_button_description">Vide Button</string>
+    <string name="movie_videos">Trailers</string>
+    <string name="movie_reviews">Reviews</string>
 </resources>
