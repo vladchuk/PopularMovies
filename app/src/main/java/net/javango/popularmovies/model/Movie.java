@@ -153,4 +153,8 @@ public class Movie implements Parcelable {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
+
+    public boolean hasMetadata() {
+        return videos != null && reviews != null;
+    }
 }

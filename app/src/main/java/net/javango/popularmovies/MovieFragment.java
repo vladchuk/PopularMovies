@@ -62,7 +62,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         TextView title = view.findViewById(R.id.movie_title);
-//        ImageView backdrop = view.findViewById(R.id.backdrop_image);
         ImageView poster = view.findViewById(R.id.poster_image);
         TextView rating = view.findViewById(R.id.movie_rating);
         TextView votes = view.findViewById(R.id.vote_count);
@@ -76,9 +75,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         title.setText(movie.getTitle());
 
         String backdropUri = NetUtil.getBackdropUri(movie.getBackdropPath());
-//        Picasso.with(getContext()).
-//                load(backdropUri).
-//                into(backdrop);
         String posterUri = NetUtil.getBackdropUri(movie.getPosterPath());
         Picasso.with(getContext()).
                 load(posterUri).
@@ -97,8 +93,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         popularity.setText(popularityTtx);
 
         setTitle();
-        if (movie.getVideos() == null)
-        getLoaderManager().initLoader(METADATA_LOADER_ID, savedInstanceState, this);
+        if (movie.hasMetadata()) {
+            populateVideos();
+            populateReviews();
+        }
+        else {
+            getLoaderManager().initLoader(METADATA_LOADER_ID, savedInstanceState, this);
+        }
         return view;
     }
 
@@ -107,9 +108,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         for (Video video : movie.getVideos()) {
             ind++;
             View videoView = LayoutInflater.from(getContext()).inflate(R.layout.video_item, null);
-//            TextView textView = videoView.findViewById(R.id.video_name);
-//            textView.setText("#" + ind);
-
             Button play = videoView.findViewById(R.id.play_button);
             play.setText("#" + ind);
             play.setOnClickListener(v -> {
@@ -209,7 +207,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(@NonNull Loader<Movie> loader, Movie metadata) {
         if (metadata != null) {
-            if (movie.getVideos() == null) {
+            if (!movie.hasMetadata()) {
                 updateMovie(metadata);
                 populateVideos();
                 populateReviews();
