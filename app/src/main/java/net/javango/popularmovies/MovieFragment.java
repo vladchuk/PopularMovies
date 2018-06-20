@@ -20,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
+import net.javango.popularmovies.model.AppDatabase;
 import net.javango.popularmovies.model.Movie;
 import net.javango.popularmovies.model.Review;
 import net.javango.popularmovies.model.Video;
@@ -74,7 +76,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         movie = getArguments().getParcelable(ARG_MOVIE);
         title.setText(movie.getTitle());
 
-        String backdropUri = NetUtil.getBackdropUri(movie.getBackdropPath());
+        ToggleButton favButton = view.findViewById(R.id.favorite_button);
+        Integer movieId = AppDatabase.getDatabase(getContext()).movieModel().getId(movie.getId());
+        favButton.setChecked(movieId != null);
+
+        favButton.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Favorite: " + favButton.isChecked(), Toast.LENGTH_LONG).show();
+        });
+
         String posterUri = NetUtil.getBackdropUri(movie.getPosterPath());
         Picasso.with(getContext()).
                 load(posterUri).

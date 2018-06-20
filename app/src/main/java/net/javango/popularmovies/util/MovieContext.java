@@ -11,6 +11,7 @@ public class MovieContext implements Parcelable {
 
     public static final int MOST_POPULAR = 1;
     public static final int TOP_RATED = 2;
+    public static final int FAVORITE = 3;
 
     // 0 - undefined
     private int context;

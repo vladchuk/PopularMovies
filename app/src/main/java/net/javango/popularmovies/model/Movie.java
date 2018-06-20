@@ -1,13 +1,20 @@
 package net.javango.popularmovies.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
 import java.util.List;
 
+@Entity
+@TypeConverters(DateConverter.class)
 public class Movie implements Parcelable {
 
+    @PrimaryKey
     private int id;
     private String title;
     private String posterPath;
@@ -19,7 +26,9 @@ public class Movie implements Parcelable {
     private double popularity;
 
     // these fields are not serialized, as they are loaded separately
+    @Ignore
     private transient List<Video> videos;
+    @Ignore
     private transient List<Review> reviews;
 
     public Movie() {

@@ -10,4 +10,6 @@
     <string name="video_button_description">Vide Button</string>
     <string name="movie_videos">Trailers</string>
     <string name="movie_reviews">Reviews</string>
+    <string name="mark_favorite">Add Favorite</string>
+    <string name="unmark_favorite">Remove Favorite</string>
 </resources>

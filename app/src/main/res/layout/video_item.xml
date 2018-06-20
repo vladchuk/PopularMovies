@@ -9,10 +9,11 @@
         android:id="@+id/play_button"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|left"
-        android:drawablePadding="-5dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/video_button_description"
-        android:drawableLeft="@android:drawable/ic_media_play"/>
+        android:drawableLeft="@android:drawable/ic_media_play"
+        android:drawablePadding="-5dp"
+        android:gravity="center_vertical|left"
+        tools:text="#1"/>
 
 </LinearLayout>
