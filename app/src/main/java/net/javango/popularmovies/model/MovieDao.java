@@ -22,4 +22,6 @@ public interface MovieDao {
     @Query("select id from movie where id = :id")
     Integer getId(int id);
 
+    @Query("select count(*) from movie")
+    int getCount();
 }

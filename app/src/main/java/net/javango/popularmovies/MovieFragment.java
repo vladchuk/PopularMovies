@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import net.javango.popularmovies.model.AppDatabase;
 import net.javango.popularmovies.model.Movie;
+import net.javango.popularmovies.model.MovieDao;
 import net.javango.popularmovies.model.Review;
 import net.javango.popularmovies.model.Video;
 import net.javango.popularmovies.util.JsonUtil;
@@ -47,6 +48,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     private Movie movie;
     private ViewGroup videoLayout;
     private ViewGroup reviewLayout;
+    private ToggleButton favButton;
 
     public static MovieFragment newInstance(Movie movie, MovieContext movieContext) {
         Bundle args = new Bundle();
@@ -55,6 +57,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         MovieFragment fragment = new MovieFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private MovieDao getMovieDao() {
+        return AppDatabase.getDatabase(getContext()).movieDao();
     }
 
     @Nullable
@@ -76,13 +82,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         movie = getArguments().getParcelable(ARG_MOVIE);
         title.setText(movie.getTitle());
 
-        ToggleButton favButton = view.findViewById(R.id.favorite_button);
-        Integer movieId = AppDatabase.getDatabase(getContext()).movieModel().getId(movie.getId());
+        favButton = view.findViewById(R.id.favorite_button);
+        Integer movieId = getMovieDao().getId(movie.getId());
         favButton.setChecked(movieId != null);
-
-        favButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Favorite: " + favButton.isChecked(), Toast.LENGTH_LONG).show();
-        });
+        favButton.setOnClickListener(v -> handleFavorite());
 
         String posterUri = NetUtil.getBackdropUri(movie.getPosterPath());
         Picasso.with(getContext()).
@@ -105,8 +108,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         if (movie.hasMetadata()) {
             populateVideos();
             populateReviews();
-        }
-        else {
+        } else {
             getLoaderManager().initLoader(METADATA_LOADER_ID, savedInstanceState, this);
         }
         return view;
@@ -144,9 +146,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void setTitle() {
         MovieContext movieContext = getArguments().getParcelable(ARG_MOVIE_CONTEXT);
-        String base = getString(movieContext
-                                        .getContext() == MovieContext.MOST_POPULAR ? R.string.sort_popularity : R
-                .string.sort_rating);
+        String base = MovieContext.getName(getContext(), movieContext.getId());
         getActivity().setTitle(base + " #" + movieContext.getPosition());
     }
 
@@ -221,8 +221,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 populateVideos();
                 populateReviews();
             }
-        }
-        else {
+        } else {
             Toast.makeText(getActivity(), "Failed to fetch metadata!", Toast.LENGTH_LONG).show();
         }
     }
@@ -230,5 +229,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoaderReset(@NonNull Loader<Movie> loader) {
         // not implemented
+    }
+
+    private void handleFavorite() {
+        new Thread(() -> {
+            if (favButton.isChecked())
+                getMovieDao().addMovie(movie);
+            else
+                getMovieDao().deleteMovie(movie);
+        }).start();
     }
 }

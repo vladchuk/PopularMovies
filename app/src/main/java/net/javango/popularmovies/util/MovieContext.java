@@ -1,7 +1,10 @@
 package net.javango.popularmovies.util;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import net.javango.popularmovies.R;
 
 /**
  * Encapsulates external information about a movie, such as context this movie is used in, its position in
@@ -14,16 +17,16 @@ public class MovieContext implements Parcelable {
     public static final int FAVORITE = 3;
 
     // 0 - undefined
-    private int context;
+    private int contextId;
     private int position;
 
-    public MovieContext(int context, int position) {
-        this.context = context;
+    public MovieContext(int contextId, int position) {
+        this.contextId = contextId;
         this.position = position;
     }
 
-    public int getContext() {
-        return context;
+    public int getId() {
+        return contextId;
     }
 
     public int getPosition() {
@@ -37,7 +40,7 @@ public class MovieContext implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(context);
+        dest.writeInt(contextId);
         dest.writeInt(position);
     }
 
@@ -52,7 +55,20 @@ public class MovieContext implements Parcelable {
     };
 
     private MovieContext(Parcel in) {
-        context = in.readInt();
+        contextId = in.readInt();
         position = in.readInt();
+    }
+
+    public static String getName(Context context, int moivieCotextId) {
+            switch (moivieCotextId) {
+                case MOST_POPULAR:
+                    return context.getString(R.string.sort_popularity);
+                case TOP_RATED:
+                    return context.getString(R.string.sort_rating);
+                case FAVORITE:
+                    return context.getString(R.string.favorite_movies);
+                default:
+                    throw new IllegalArgumentException("Invalid movie context: " + moivieCotextId);
+            }
     }
 }

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import net.javango.popularmovies.model.AppDatabase;
 import net.javango.popularmovies.model.Movie;
 import net.javango.popularmovies.util.JsonUtil;
 import net.javango.popularmovies.util.MovieContext;
@@ -37,8 +38,9 @@ public class MovieListFragment extends Fragment
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private GridLayoutManager layoutManager;
+    private RecyclerView.OnScrollListener scrollListener;
 
-    private static int movieContext = MovieContext.MOST_POPULAR;
+    private static int movieContextId = MovieContext.MOST_POPULAR;
 
     // if page is currently loading
     private static volatile boolean isLoading;
@@ -57,18 +59,19 @@ public class MovieListFragment extends Fragment
                 false);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mMovieAdapter = new MovieAdapter(getActivity(), movieContext);
-//        mMovieAdapter.setData(null, movieContext);
+        mMovieAdapter = new MovieAdapter(getActivity(), movieContextId);
+//        mMovieAdapter.setData(null, movieContextId);
         mRecyclerView.setAdapter(mMovieAdapter);
-        RecyclerView.OnScrollListener scrollListener = new MovieScrollListener(layoutManager);
-        mRecyclerView.addOnScrollListener(scrollListener);
+        scrollListener = new MovieScrollListener(layoutManager);
 
         // enable menu
         setHasOptionsMenu(true);
 
-        // start
-        if (currentPage == 1)
-            getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
+        if (!isFavorites()) {
+            mRecyclerView.addOnScrollListener(scrollListener);
+            if (currentPage == 1)
+                getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
+        }
         return view;
     }
 
@@ -78,10 +81,21 @@ public class MovieListFragment extends Fragment
         getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
     }
 
-    private void setTitle() {
-        String title = movieContext == MovieContext.MOST_POPULAR ? getString(R.string.sort_popularity) :
-                getString(R.string.sort_rating);
-        getActivity().setTitle(title);
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isFavorites()) {
+            new Thread(() -> {
+                int movieCount = AppDatabase.getDatabase(getContext()).movieDao().getCount();
+                if (mMovieAdapter.getItemCount() != movieCount) {
+                    List<Movie> movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
+                    getActivity().runOnUiThread(() -> {
+                        mMovieAdapter.setData(movies, movieContextId);
+                        mMovieAdapter.notifyDataSetChanged();
+                    });
+                }
+            }).start();
+        }
     }
 
     private void restartLoader(boolean canLoad) {
@@ -118,7 +132,7 @@ public class MovieListFragment extends Fragment
         public List<Movie> loadInBackground() {
             try {
                 int page = mFragment.currentPage;
-                URL url = movieContext == MovieContext.MOST_POPULAR ?
+                URL url = movieContextId == MovieContext.MOST_POPULAR ?
                         NetUtil.getPopularUrl(page) : NetUtil.getTopRatedUrl(page);
                 String json = NetUtil.getContent(url);
                 List<Movie> movies = JsonUtil.parseMovies(json);
@@ -150,24 +164,30 @@ public class MovieListFragment extends Fragment
             mMovieAdapter.appendData(data);
         } else
             Toast.makeText(getActivity(), "Failed to load movies!", Toast.LENGTH_LONG).show();
-//        if (isLastPage()) {
-//            getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
-//        }
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
-        // not implemented
+        // not used
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_movies, menu);
         int id;
-        if (movieContext == MovieContext.MOST_POPULAR)
-            id = R.id.sort_popularity;
-        else
-            id = R.id.sort_rating;
+        switch (movieContextId) {
+            case MovieContext.MOST_POPULAR:
+                id = R.id.sort_popularity;
+                break;
+            case MovieContext.TOP_RATED:
+                id = R.id.sort_rating;
+                break;
+            case MovieContext.FAVORITE:
+                id = R.id.favorite_movies;
+                break;
+            default:
+                throw new IllegalArgumentException("No such context: " + movieContextId);
+        }
         menu.findItem(id).setChecked(true);
     }
 
@@ -176,24 +196,47 @@ public class MovieListFragment extends Fragment
         int id = item.getItemId();
         switch (id) {
             case R.id.sort_popularity:
-                movieContext = MovieContext.MOST_POPULAR;
+                movieContextId = MovieContext.MOST_POPULAR;
                 break;
             case R.id.sort_rating:
-                movieContext = MovieContext.TOP_RATED;
+                movieContextId = MovieContext.TOP_RATED;
                 break;
+            case R.id.favorite_movies:
+                movieContextId = MovieContext.FAVORITE;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid id: " + id);
         }
-        item.setChecked(true);
-        setTitle();
+        String title = MovieContext.getName(getContext(), movieContextId);
+        getActivity().setTitle(title);
 
-        currentPage = 1;
-        mMovieAdapter.setData(null, movieContext);
-        restartLoader(true);
+        item.setChecked(true);
+        handleContextSwitch();
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void handleContextSwitch() {
+        if (isFavorites()) {
+            mRecyclerView.removeOnScrollListener(scrollListener);
+            new Thread(() -> {
+                List<Movie> movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
+                getActivity().runOnUiThread(() -> mMovieAdapter.setData(movies, movieContextId));
+            }).start();
+        } else {
+            currentPage = 1;
+            mMovieAdapter.setData(null, movieContextId);
+            mRecyclerView.addOnScrollListener(scrollListener);
+            restartLoader(true);
+        }
+    }
+
     private boolean isLastPage() {
         return currentPage >= TOTAL_PAGES;
+    }
+
+    private boolean isFavorites() {
+        return movieContextId == MovieContext.FAVORITE;
     }
 
     private class MovieScrollListener extends PaginationScrollListener {
