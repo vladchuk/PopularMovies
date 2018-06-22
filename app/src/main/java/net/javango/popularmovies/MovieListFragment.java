@@ -31,8 +31,9 @@ import java.util.List;
 public class MovieListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
-    private static final String ARG_CAN_LOAD = "canLoad";
     private static final String TAG = MovieListActivity.class.getSimpleName();
+    private static final String ARG_CAN_LOAD = "canLoad";
+    private static final String MOVIE_COXNTEXT_ID = "movieContextId";
     private static final int MOVIE_LOADER_ID = 13;
 
     private RecyclerView mRecyclerView;
@@ -53,6 +54,7 @@ public class MovieListFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
         mRecyclerView = view.findViewById(R.id.movie_recycler_view);
         layoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL,
@@ -60,12 +62,12 @@ public class MovieListFragment extends Fragment
         mRecyclerView.setLayoutManager(layoutManager);
 
         mMovieAdapter = new MovieAdapter(getActivity(), movieContextId);
-//        mMovieAdapter.setData(null, movieContextId);
         mRecyclerView.setAdapter(mMovieAdapter);
         scrollListener = new MovieScrollListener(layoutManager);
 
         // enable menu
         setHasOptionsMenu(true);
+        setTitle();
 
         if (!isFavorites()) {
             mRecyclerView.addOnScrollListener(scrollListener);
@@ -73,6 +75,11 @@ public class MovieListFragment extends Fragment
                 getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
         }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(MOVIE_COXNTEXT_ID, movieContextId);
     }
 
     @Override
@@ -96,6 +103,11 @@ public class MovieListFragment extends Fragment
                 }
             }).start();
         }
+    }
+
+    private void setTitle() {
+        String title = MovieContext.getName(getContext(), movieContextId);
+        getActivity().setTitle(title);
     }
 
     private void restartLoader(boolean canLoad) {
@@ -207,10 +219,8 @@ public class MovieListFragment extends Fragment
             default:
                 throw new IllegalArgumentException("Invalid id: " + id);
         }
-        String title = MovieContext.getName(getContext(), movieContextId);
-        getActivity().setTitle(title);
-
         item.setChecked(true);
+        setTitle();
         handleContextSwitch();
 
         return super.onOptionsItemSelected(item);
@@ -221,7 +231,10 @@ public class MovieListFragment extends Fragment
             mRecyclerView.removeOnScrollListener(scrollListener);
             new Thread(() -> {
                 List<Movie> movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
-                getActivity().runOnUiThread(() -> mMovieAdapter.setData(movies, movieContextId));
+                getActivity().runOnUiThread(() -> {
+                    mMovieAdapter.setData(movies, movieContextId);
+                    mMovieAdapter.notifyDataSetChanged();
+                });
             }).start();
         } else {
             currentPage = 1;
