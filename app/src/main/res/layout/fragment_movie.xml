@@ -52,10 +52,10 @@
             style="@style/movie_label_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/movie_rating_label"
-            app:layout_constraintStart_toEndOf="@+id/poster_image"
-            app:layout_constraintTop_toTopOf="@+id/poster_image"/>
+            app:layout_constraintStart_toStartOf="@+id/popularity_label"
+            app:layout_constraintTop_toBottomOf="@+id/popularity_label"/>
 
         <TextView
             android:id="@+id/movie_rating"
@@ -74,8 +74,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/popularity_label"
-            app:layout_constraintStart_toStartOf="@+id/rating_label"
-            app:layout_constraintTop_toBottomOf="@+id/rating_label"/>
+            app:layout_constraintStart_toStartOf="@+id/movie_date"
+            app:layout_constraintTop_toBottomOf="@+id/movie_date"/>
 
         <TextView
             android:id="@+id/popularity"
@@ -94,8 +94,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/vote_count_label"
-            app:layout_constraintStart_toStartOf="@+id/popularity_label"
-            app:layout_constraintTop_toBottomOf="@+id/popularity_label"/>
+            app:layout_constraintStart_toStartOf="@+id/rating_label"
+            app:layout_constraintTop_toBottomOf="@+id/rating_label"/>
 
         <TextView
             android:id="@+id/vote_count"
@@ -111,30 +111,30 @@
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/favorite_state"
             android:background="?android:selectableItemBackground"
+            android:drawableStart="@drawable/favorite_state"
             android:textAllCaps="true"
             android:textOff="@string/mark_favorite"
             android:textOn="@string/unmark_favorite"
-            app:layout_constraintBottom_toTopOf="@+id/movie_date"
+            app:layout_constraintBottom_toBottomOf="@+id/poster_image"
             app:layout_constraintStart_toStartOf="@+id/vote_count_label"
-            app:layout_constraintTop_toBottomOf="@+id/vote_count_label"/>
+            />
 
         <TextView
             android:id="@+id/movie_date"
             style="@style/movie_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/poster_image"
-            app:layout_constraintStart_toStartOf="@+id/favorite_button"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@+id/poster_image"
+            app:layout_constraintTop_toTopOf="@+id/poster_image"
             tools:text="May 13, 1996"/>
 
         <TextView
             android:id="@+id/movie_synopsis"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -142,29 +142,46 @@
             app:layout_constraintTop_toBottomOf="@+id/poster_image"
             tools:text="Movie synopsis"/>
 
-        <TextView
-            android:id="@+id/videos_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
+        <View
+            android:id="@+id/divider_movie"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            style="@style/movie_text_style"
-            android:text="@string/movie_videos"
+            android:background="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@id/movie_synopsis"
             app:layout_constraintStart_toStartOf="@+id/movie_synopsis"
             app:layout_constraintTop_toBottomOf="@+id/movie_synopsis"/>
 
+        <TextView
+            android:id="@+id/videos_label"
+            style="@style/movie_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/movie_videos"
+            app:layout_constraintStart_toStartOf="@+id/movie_synopsis"
+            app:layout_constraintTop_toBottomOf="@+id/divider_movie"/>
+
         <GridLayout
             android:id="@+id/videos_list"
-            android:columnCount="6"
-            android:useDefaultMargins="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginRight="16dp"
-            app:layout_constraintStart_toStartOf="@id/videos_label"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:columnCount="6"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/videos_label"
             app:layout_constraintTop_toBottomOf="@+id/videos_label">
         </GridLayout>
+
+        <View
+            android:id="@+id/divider_trailers"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@id/videos_list"
+            app:layout_constraintStart_toStartOf="@+id/videos_label"
+            app:layout_constraintTop_toBottomOf="@+id/videos_list"/>
 
         <TextView
             android:id="@+id/reviews_label"
@@ -189,6 +206,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reviews_label">
         </LinearLayout>
+
+
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
