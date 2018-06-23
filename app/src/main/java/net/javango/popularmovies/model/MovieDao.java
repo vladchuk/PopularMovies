@@ -16,7 +16,7 @@ public interface MovieDao {
     @Delete
     void deleteMovie(Movie movie);
 
-    @Query("select * from movie")
+    @Query("select * from movie order by id")
     List<Movie> fetchAll();
 
     @Query("select id from movie where id = :id")

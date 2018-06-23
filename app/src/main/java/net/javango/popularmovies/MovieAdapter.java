@@ -59,7 +59,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
     public void onBindViewHolder(@NonNull MovieHolder holder, int position) {
         Movie movie = mMovies.get(position);
         holder.mMovie = movie;
-        holder.position = position + 1;
+        holder.position = position;
         String posterUri = NetUtil.getPosterUri(movie.getPosterPath());
         Picasso.with(mContext).
                 load(posterUri).
@@ -86,8 +86,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
         @Override
         public void onClick(View v) {
             MovieContext cxt = new MovieContext(movieContext, position);
-            Intent intent = MovieActivity.newIntent(mContext, mMovie, cxt);
+            Intent intent = MoviePagerActivity.newIntent(mContext, mMovie, cxt);
             mContext.startActivity(intent);
         }
+    }
+
+    public static List<Movie> getmMovies() {
+        return mMovies;
     }
 }

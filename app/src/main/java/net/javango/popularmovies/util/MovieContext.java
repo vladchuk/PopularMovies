@@ -33,6 +33,10 @@ public class MovieContext implements Parcelable {
         return position;
     }
 
+    public void setPosition(int pos) {
+        position = pos;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -59,16 +63,21 @@ public class MovieContext implements Parcelable {
         position = in.readInt();
     }
 
-    public static String getName(Context context, int moivieCotextId) {
-            switch (moivieCotextId) {
-                case MOST_POPULAR:
-                    return context.getString(R.string.sort_popularity);
-                case TOP_RATED:
-                    return context.getString(R.string.sort_rating);
-                case FAVORITE:
-                    return context.getString(R.string.favorite_movies);
-                default:
-                    throw new IllegalArgumentException("Invalid movie context: " + moivieCotextId);
-            }
+    public static String getName(Context context, int movieContextId) {
+        switch (movieContextId) {
+            case MOST_POPULAR:
+                return context.getString(R.string.sort_popularity);
+            case TOP_RATED:
+                return context.getString(R.string.sort_rating);
+            case FAVORITE:
+                return context.getString(R.string.favorite_movies);
+            default:
+                throw new IllegalArgumentException("Invalid movie context: " + movieContextId);
+        }
+    }
+
+    public static String getMovieName(Context context, MovieContext movieContext) {
+        String name = getName(context, movieContext.getId()) + " #" + (movieContext.getPosition() + 1);
+        return name;
     }
 }
