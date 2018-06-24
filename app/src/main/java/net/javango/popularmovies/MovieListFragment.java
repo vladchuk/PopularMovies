@@ -69,11 +69,9 @@ public class MovieListFragment extends Fragment
         setHasOptionsMenu(true);
         setTitle();
 
-        if (!isFavorites()) {
-            mRecyclerView.addOnScrollListener(scrollListener);
-            if (currentPage == 1)
-                getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
-        }
+        mRecyclerView.addOnScrollListener(scrollListener);
+        if (currentPage == 1)
+            getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
         return view;
     }
 
@@ -98,7 +96,6 @@ public class MovieListFragment extends Fragment
                     List<Movie> movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
                     getActivity().runOnUiThread(() -> {
                         mMovieAdapter.setData(movies, movieContextId);
-                        mMovieAdapter.notifyDataSetChanged();
                     });
                 }
             }).start();
@@ -130,8 +127,8 @@ public class MovieListFragment extends Fragment
 
         @Override
         protected void onStartLoading() {
-            if (!canLoad)
-                return;
+//            if (!canLoad)
+//                return;
 
             if (movies != null) {
                 deliverResult(movies);
@@ -143,11 +140,16 @@ public class MovieListFragment extends Fragment
         @Override
         public List<Movie> loadInBackground() {
             try {
-                int page = mFragment.currentPage;
-                URL url = movieContextId == MovieContext.MOST_POPULAR ?
-                        NetUtil.getPopularUrl(page) : NetUtil.getTopRatedUrl(page);
-                String json = NetUtil.getContent(url);
-                List<Movie> movies = JsonUtil.parseMovies(json);
+                List<Movie> movies;
+                if (mFragment.isFavorites()) {
+                    movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
+                } else {
+                    int page = mFragment.currentPage;
+                    URL url = movieContextId == MovieContext.MOST_POPULAR ?
+                            NetUtil.getPopularUrl(page) : NetUtil.getTopRatedUrl(page);
+                    String json = NetUtil.getContent(url);
+                    movies = JsonUtil.parseMovies(json);
+                }
                 return movies;
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load movies:", e);
@@ -173,6 +175,7 @@ public class MovieListFragment extends Fragment
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> data) {
         isLoading = false;
         if (data != null) {
+            currentPage += 1;
             mMovieAdapter.appendData(data);
         } else
             Toast.makeText(getActivity(), "Failed to load movies!", Toast.LENGTH_LONG).show();
@@ -227,25 +230,13 @@ public class MovieListFragment extends Fragment
     }
 
     private void handleContextSwitch() {
-        if (isFavorites()) {
-            mRecyclerView.removeOnScrollListener(scrollListener);
-            new Thread(() -> {
-                List<Movie> movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
-                getActivity().runOnUiThread(() -> {
-                    mMovieAdapter.setData(movies, movieContextId);
-                    mMovieAdapter.notifyDataSetChanged();
-                });
-            }).start();
-        } else {
-            currentPage = 1;
-            mMovieAdapter.setData(null, movieContextId);
-            mRecyclerView.addOnScrollListener(scrollListener);
-            restartLoader(true);
-        }
+        currentPage = 1;
+        mMovieAdapter.setData(null, movieContextId);
+        restartLoader(true);
     }
 
     private boolean isLastPage() {
-        return currentPage >= TOTAL_PAGES;
+        return isFavorites() || currentPage > TOTAL_PAGES;
     }
 
     private boolean isFavorites() {
@@ -260,8 +251,11 @@ public class MovieListFragment extends Fragment
 
         @Override
         protected void loadMoreItems() {
+//            if (isFavorites())
+//                return;
+
             isLoading = true;
-            currentPage += 1; //Increment page index to load the next one
+//            currentPage += 1; //Increment page index to load the next one
             restartLoader(true);
         }
 

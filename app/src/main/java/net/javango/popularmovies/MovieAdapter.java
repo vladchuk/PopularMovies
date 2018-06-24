@@ -61,8 +61,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
         holder.mMovie = movie;
         holder.position = position;
         String posterUri = NetUtil.getPosterUri(movie.getPosterPath());
+        int width = (int)mContext.getResources().getDimension(R.dimen.poster_width);
+        int height = (int)mContext.getResources().getDimension(R.dimen.poster_height);
         Picasso.with(mContext).
                 load(posterUri).
+                resize(width, height).
                 placeholder(R.drawable.poster_placeholder).
                 into(holder.mImageView);
     }

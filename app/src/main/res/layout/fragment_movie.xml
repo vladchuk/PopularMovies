@@ -178,6 +178,7 @@
             android:id="@+id/divider_trailers"
             android:layout_width="0dp"
             android:layout_height="1dp"
+            android:layout_marginTop="8dp"
             android:background="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="@id/videos_list"
             app:layout_constraintStart_toStartOf="@+id/videos_label"
@@ -185,12 +186,11 @@
 
         <TextView
             android:id="@+id/reviews_label"
+            style="@style/movie_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:paddingBottom="4dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="8dp"
-            style="@style/movie_text_style"
             android:text="@string/movie_reviews"
             app:layout_constraintStart_toStartOf="@+id/poster_image"
             app:layout_constraintTop_toBottomOf="@+id/videos_list"/>
