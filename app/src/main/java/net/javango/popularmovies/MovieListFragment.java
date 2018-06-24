@@ -32,7 +32,6 @@ public class MovieListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private static final String TAG = MovieListActivity.class.getSimpleName();
-    private static final String ARG_CAN_LOAD = "canLoad";
     private static final String MOVIE_COXNTEXT_ID = "movieContextId";
     private static final int MOVIE_LOADER_ID = 13;
 
@@ -108,28 +107,21 @@ public class MovieListFragment extends Fragment
     }
 
     private void restartLoader(boolean canLoad) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ARG_CAN_LOAD, canLoad);
-        getLoaderManager().restartLoader(MOVIE_LOADER_ID, bundle, MovieListFragment.this);
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MovieListFragment.this);
     }
 
     static class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
         private List<Movie> movies;
         private MovieListFragment mFragment;
-        private boolean canLoad;
 
-        public MovieLoader(MovieListFragment fragment, boolean canLoad) {
+        public MovieLoader(MovieListFragment fragment) {
             super(fragment.getContext());
             mFragment = fragment;
-            this.canLoad = canLoad;
         }
 
         @Override
         protected void onStartLoading() {
-//            if (!canLoad)
-//                return;
-
             if (movies != null) {
                 deliverResult(movies);
             } else {
@@ -167,8 +159,7 @@ public class MovieListFragment extends Fragment
     @NonNull
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
-        boolean canLoad = args == null || args.getBoolean(ARG_CAN_LOAD);
-        return new MovieLoader(this, canLoad);
+        return new MovieLoader(this);
     }
 
     @Override
@@ -223,13 +214,13 @@ public class MovieListFragment extends Fragment
                 throw new IllegalArgumentException("Invalid id: " + id);
         }
         item.setChecked(true);
-        setTitle();
-        handleContextSwitch();
+        switchMovieContext();
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void handleContextSwitch() {
+    private void switchMovieContext() {
+        setTitle();
         currentPage = 1;
         mMovieAdapter.setData(null, movieContextId);
         restartLoader(true);
@@ -251,24 +242,17 @@ public class MovieListFragment extends Fragment
 
         @Override
         protected void loadMoreItems() {
-//            if (isFavorites())
-//                return;
-
             isLoading = true;
-//            currentPage += 1; //Increment page index to load the next one
             restartLoader(true);
         }
 
         @Override
         public boolean isLastPage() {
-            Log.i(TAG, "Current page: " + currentPage);
             return MovieListFragment.this.isLastPage();
         }
 
         @Override
         public boolean isLoading() {
-            if (isLoading)
-                Log.i(TAG, "Loading.......................");
             return isLoading;
         }
     }
