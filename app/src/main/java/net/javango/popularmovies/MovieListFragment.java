@@ -1,5 +1,6 @@
 package net.javango.popularmovies;
 
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +50,8 @@ public class MovieListFragment extends Fragment
     private static int TOTAL_PAGES = 5;
     // indicates the current page being loaded
     private static volatile int currentPage = 1;
+    private List<Movie> favMovies;
+
 
     @Nullable
     @Override
@@ -69,6 +73,17 @@ public class MovieListFragment extends Fragment
         setTitle();
 
         mRecyclerView.addOnScrollListener(scrollListener);
+        AppDatabase.getDatabase(getContext()).movieDao().fetchAll().observe(this, new Observer<List<Movie>>() {
+
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                favMovies = movies;
+                if (isFavorites() && mMovieAdapter.getItemCount() != movies.size())
+                    mMovieAdapter.setData(movies, movieContextId);
+            }
+        });
+
+
         if (currentPage == 1)
             getLoaderManager().initLoader(MOVIE_LOADER_ID, savedInstanceState, this);
         return view;
@@ -83,22 +98,6 @@ public class MovieListFragment extends Fragment
     public void onPause() {
         super.onPause();
         getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (isFavorites()) {
-            new Thread(() -> {
-                int movieCount = AppDatabase.getDatabase(getContext()).movieDao().getCount();
-                if (mMovieAdapter.getItemCount() != movieCount) {
-                    List<Movie> movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
-                    getActivity().runOnUiThread(() -> {
-                        mMovieAdapter.setData(movies, movieContextId);
-                    });
-                }
-            }).start();
-        }
     }
 
     private void setTitle() {
@@ -132,17 +131,12 @@ public class MovieListFragment extends Fragment
         @Override
         public List<Movie> loadInBackground() {
             try {
-                List<Movie> movies;
-                if (mFragment.isFavorites()) {
-                    movies = AppDatabase.getDatabase(getContext()).movieDao().fetchAll();
-                } else {
-                    int page = mFragment.currentPage;
-                    URL url = movieContextId == MovieContext.MOST_POPULAR ?
-                            NetUtil.getPopularUrl(page) : NetUtil.getTopRatedUrl(page);
-                    String json = NetUtil.getContent(url);
-                    movies = JsonUtil.parseMovies(json);
-                }
-                return movies;
+                int page = mFragment.currentPage;
+                URL url = movieContextId == MovieContext.MOST_POPULAR ?
+                        NetUtil.getPopularUrl(page) : NetUtil.getTopRatedUrl(page);
+                String json = NetUtil.getContent(url);
+                List<Movie> list = JsonUtil.parseMovies(json);
+                return list;
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load movies:", e);
                 return null;
@@ -221,9 +215,14 @@ public class MovieListFragment extends Fragment
 
     private void switchMovieContext() {
         setTitle();
-        currentPage = 1;
-        mMovieAdapter.setData(null, movieContextId);
-        restartLoader(true);
+        if (isFavorites()) {
+            currentPage = 0;
+            mMovieAdapter.setData(favMovies, movieContextId);
+        } else {
+            currentPage = 1;
+            mMovieAdapter.setData(null, movieContextId);
+            restartLoader(true);
+        }
     }
 
     private boolean isLastPage() {

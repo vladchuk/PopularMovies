@@ -1,5 +1,6 @@
 package net.javango.popularmovies.model;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -17,11 +18,12 @@ public interface MovieDao {
     void deleteMovie(Movie movie);
 
     @Query("select * from movie order by id")
-    List<Movie> fetchAll();
+    LiveData<List<Movie>> fetchAll();
 
     @Query("select id from movie where id = :id")
     Integer getId(int id);
 
     @Query("select count(*) from movie")
     int getCount();
+
 }
